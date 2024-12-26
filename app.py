@@ -4,6 +4,7 @@ from flask_caching import Cache
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import os
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -13,6 +14,16 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple', 'CACHE_DEFAULT_TIMEOUT': 3600
 # Настройка лимитера
 limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
+
+# обработчик для ошибки лимита
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    # Получаем время, когда можно будет сделать следующий запрос
+    next_request_time = datetime.now() + timedelta(hours=1)
+    return jsonify({
+        'error': 'Превышен лимит запросов',
+        'next_request_time': f'Попробуйте после {next_request_time.strftime("%Y-%m-%d %H:%M:%S")}'
+    }), 429
 
 # API ключ от OpenWeatherMap
 API_KEY = os.getenv('OPENWEATHERMAP_API_KEY')
