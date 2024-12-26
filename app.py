@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_caching import Cache
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+import os
 
 app = Flask(__name__)
 
@@ -14,7 +15,7 @@ limiter = Limiter(key_func=get_remote_address)
 limiter.init_app(app)
 
 # API ключ от OpenWeatherMap
-API_KEY = "f01f4d259447f8e482d8dfbae7b9b18b"
+API_KEY = os.getenv('OPENWEATHERMAP_API_KEY')
 BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
 
 # Функция для получения погоды из OpenWeatherMap
