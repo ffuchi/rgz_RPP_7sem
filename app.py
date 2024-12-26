@@ -27,7 +27,7 @@ def get_weather_from_api(city):
     }
     
     # Запрос к OpenWeatherMap
-    response = requests.get(BASE_URL, params=params)
+    response = requests.get(BASE_URL, params=params, timeout=10)
     
     if response.status_code != 200:
         return None
@@ -73,4 +73,4 @@ def get_weather():
     return jsonify(weather_info)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
